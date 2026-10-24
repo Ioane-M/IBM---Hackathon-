@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ProfLM Pitch</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=JetBrains+Mono:wght@500&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: a 1280x720 white stage scaled to fill the whole window. Keyboard only, nothing on screen. */
+:root {
+  --bg: #ffffff;
+  --ground: #e9eef7;
+  --paper: #f3f6fc;
+  --paper-2: #e6edf9;
+  --ink: #111c33;
+  --ink-dim: #55627d;
+  --line: #d3ddee;
+  --blue: #0f62fe;
+  --blue-soft: #e3edff;
+  --yellow: #ffc21a;
+  --yellow-soft: #fff1c4;
+  --amber: #a86500;
+  --green: #14a85f;
+  --green-dark: #0b7a43;
+  --green-soft: #d8f4e6;
+  --coral: #f0443a;
+  --coral-dark: #c42a21;
+  --orange: #ff8a1f;
+  --f-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--ground); color: var(--ink); font-family: var(--f-body); overflow: hidden; }
+button { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+#frame { position: absolute; }
+#stage { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; background: var(--bg); overflow: hidden; }
+
+/* ---------- slides ---------- */
+.slide { position: absolute; inset: 0; padding: 56px 72px; opacity: 0; pointer-events: none; transition: opacity .4s ease; }
+.slide.active { opacity: 1; pointer-events: auto; }
+.kicker { font-family: var(--f-mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--blue); margin: 0 0 14px; }
+h1, h2 { font-family: var(--f-display); font-weight: 800; margin: 0; line-height: 1.04; text-wrap: balance; letter-spacing: -.02em; }
+h1 { font-size: 64px; }
+h2 { font-size: 52px; }
+p { margin: 0; }
+.lede { font-size: 28px; line-height: 1.35; color: var(--ink-dim); max-width: 28em; }
+.foot { position: absolute; left: 72px; right: 72px; bottom: 26px; font-size: 14px; line-height: 1.35; color: var(--ink-dim); display: flex; justify-content: space-between; gap: 24px; }
+.brand { position: absolute; top: 24px; right: 40px; display: flex; align-items: center; gap: 8px; font-family: var(--f-display); font-weight: 800; font-size: 22px; color: var(--ink); }
+.mark { width: 36px; height: 38px; flex: none; }
+.biglogo { display: flex; align-items: center; gap: 18px; font-family: var(--f-display); font-weight: 800; font-size: 76px; letter-spacing: -.03em; line-height: 1; }
+.biglogo .mark { width: 92px; height: 97px; }
+.biglogo b { color: var(--blue); }
+.brand b { color: var(--blue); }
+.topbar { position: absolute; left: 0; right: 0; top: 0; height: 8px; background: linear-gradient(90deg, var(--blue), var(--yellow) 55%, var(--green)); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.slide.active .rise { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--d, 0) * 1s); }
+.slide.active .bar { animation: grow .9s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--d, 0) * 1s); }
+.bar { transform-box: fill-box; transform-origin: 50% 100%; }
+
+/* slide 1 */
+#s1 .wrap { display: grid; grid-template-columns: 1fr 520px; gap: 48px; align-items: center; height: 100%; padding-top: 14px; padding-bottom: 36px; }
+.stat { font-family: var(--f-display); font-weight: 800; font-size: 230px; line-height: .9; color: var(--coral); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.stat-cap { font-size: 30px; line-height: 1.25; max-width: 16em; margin-top: 18px; font-weight: 600; }
+.stat-sub { margin-top: 12px; font-size: 22px; color: var(--ink-dim); max-width: 24em; }
+.chart text { font-family: var(--f-body); fill: var(--ink-dim); font-size: 15px; }
+.chart .val { fill: var(--ink); font-family: var(--f-mono); font-size: 18px; }
+.chart .note { font-family: var(--f-display); font-weight: 800; font-size: 22px; fill: #fff; }
+.chart-title { font-size: 17px; color: var(--ink-dim); margin-bottom: 8px; }
+.warn { margin-top: 20px; padding: 14px 18px; border-left: 5px solid var(--yellow); background: var(--yellow-soft); font-size: 19px; border-radius: 0 10px 10px 0; max-width: 31em; }
+
+/* slide 2 */
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 26px 26px 28px; min-width: 0; }
+.card h3 { font-family: var(--f-display); font-size: 28px; margin: 0 0 18px; line-height: 1.1; }
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 20px; }
+.row span:first-child { color: var(--ink-dim); }
+.row b { font-family: var(--f-mono); font-size: 24px; font-weight: 500; }
+.bad { color: var(--coral-dark); } .flat { color: var(--ink); } .good { color: var(--green-dark); } .maybe { color: var(--blue); }
+.card.ours { border: 2px solid var(--blue); background: var(--blue-soft); }
+.card .small { margin-top: 16px; font-size: 19px; color: var(--ink-dim); line-height: 1.35; }
+.tag { display: inline-block; font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 99px; background: var(--yellow); color: var(--ink); vertical-align: middle; }
+
+/* slide 4 (solution) */
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 28px; }
+.tile { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 26px 22px 22px; min-width: 0; }
+.tile svg { width: 58px; height: 58px; margin-bottom: 14px; }
+.tile h3 { font-family: var(--f-display); font-size: 29px; margin: 0 0 8px; line-height: 1.08; }
+.tile p { font-size: 19px; line-height: 1.3; color: var(--ink-dim); }
+.tile.hot { border: 2px solid var(--blue); background: var(--blue-soft); }
+.tbadge { position: absolute; top: 16px; right: 16px; display: flex; gap: 6px; }
+.tbadge i, .dn { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-style: normal; font-family: var(--f-mono); font-weight: 700; font-size: 14px; color: #fff; }
+.d1 > .dn, i.d1 { background: var(--blue); } .d2 > .dn, i.d2 { background: var(--orange); } .d3 > .dn, i.d3 { background: var(--green); }
+.dims { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px; }
+.dim { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; border-radius: 14px; border: 2px solid; background: var(--bg); min-width: 0; }
+.dim.d1 { border-color: var(--blue); } .dim.d2 { border-color: var(--orange); } .dim.d3 { border-color: var(--green); }
+.dn { flex: none; width: 36px; height: 36px; font-size: 18px; }
+.dim h4 { margin: 0 0 4px; font-family: var(--f-display); font-size: 21px; line-height: 1.15; }
+.dim p { font-size: 17px; line-height: 1.3; color: var(--ink-dim); }
+
+/* opening photo slides */
+.open-text { position: absolute; left: 72px; top: 0; bottom: 0; width: 600px; display: flex; flex-direction: column; justify-content: center; gap: 30px; }
+.open-text h1 { font-size: 72px; line-height: 1.04; }
+.open-text h1 em { font-style: normal; color: var(--blue); }
+.open-text .lede { font-size: 30px; color: var(--ink-dim); max-width: 14em; }
+.photo-art { position: absolute; right: 60px; top: 130px; width: 640px; height: 426px; }
+.photo-art .sq { position: absolute; border-radius: 30px; }
+.photo-art.portrait { right: 150px; top: 56px; width: 430px; height: 608px; }
+.photo-art.portrait img { object-position: 100% 0; }
+#s0a .biglogo { font-size: 104px; }
+#s0a .biglogo .mark { width: 128px; height: 134px; }
+.eyebrow { font-family: var(--f-mono); font-size: 18px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-dim); }
+.photo-art .sq1 { width: 300px; height: 300px; background: var(--yellow); right: -30px; bottom: -30px; }
+.photo-art .sq2 { width: 200px; height: 200px; background: var(--blue); left: -30px; top: -30px; }
+.frame-img { position: absolute; inset: 0; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px #111c3340; background: var(--paper); }
+.frame-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cover { position: absolute; inset: 0; clip-path: polygon(0% 52%, 33% 56%, 37% 73.5%, 53.8% 86%, 53.5% 88.5%, 38.6% 97.5%, 3.5% 88.5%, 0% 84%); background: repeating-linear-gradient(135deg, #0f62fe 0 14px, #0b4fd1 14px 28px); }
+.cover span { position: absolute; left: 8%; top: 70%; font-family: var(--f-display); font-weight: 800; font-size: 30px; color: #fff; transform: rotate(6deg); }
+.bub { position: absolute; left: 3%; top: 21%; width: 40%; background: #fff; border: 3px solid var(--blue); border-radius: 16px; padding: 10px 14px; font-size: 21px; line-height: 1.25; font-weight: 600; box-shadow: 0 10px 26px #0f62fe40; opacity: 0; }
+.bub b { display: block; font-family: var(--f-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: 4px; font-weight: 500; }
+.bub::after { content: ""; position: absolute; left: 34%; bottom: -14px; width: 22px; height: 22px; background: #fff; border-right: 3px solid var(--blue); border-bottom: 3px solid var(--blue); transform: rotate(45deg); }
+.bub.plain { border-color: var(--coral); box-shadow: 0 10px 26px #f0443a40; }
+.bub.plain b { color: var(--coral-dark); }
+.bub.plain::after { border-color: var(--coral); }
+.cap { position: absolute; left: 16px; top: 16px; font-family: var(--f-mono); font-size: 15px; letter-spacing: .05em; padding: 7px 14px; border-radius: 99px; background: var(--yellow); color: var(--ink); font-weight: 500; }
+.cap.warnchip { background: var(--coral); color: #fff; }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.96); } to { opacity: 1; transform: none; } }
+.slide.active .bub { animation: pop .6s ease 1.1s both; }
+
+/* ending */
+#s6 { display: flex; flex-direction: column; justify-content: center; gap: 44px; }
+#s6 h1 { font-size: 126px; line-height: 1; }
+#s6 h1 em { font-style: normal; color: var(--blue); }
+#s6 h1 span { background: linear-gradient(transparent 62%, var(--yellow) 62% 92%, transparent 92%); }
+.blob { position: absolute; right: -170px; bottom: -200px; width: 460px; height: 460px; border-radius: 50%; background: var(--yellow); }
+.blob.b2 { right: 150px; bottom: -250px; width: 300px; height: 300px; background: var(--blue); }
+
+/* ---------- demo ---------- */
+#s4 { padding: 0; }
+.demo { height: 100%; display: grid; grid-template-rows: 54px 1fr 40px; }
+.dbar { display: flex; align-items: center; gap: 14px; padding: 0 24px; border-bottom: 1px solid var(--line); font-size: 16px; color: var(--ink-dim); background: var(--paper); }
+.dbar b { color: var(--ink); font-family: var(--f-display); font-size: 21px; }
+.dbar b.lg { display: inline-flex; align-items: center; gap: 8px; }
+.dbar .mark { width: 30px; height: 32px; }
+.dbar .live { margin-left: auto; font-family: var(--f-mono); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink); background: var(--yellow); padding: 4px 10px; border-radius: 99px; }
+.dbar .brand-in { color: var(--blue); }
+.dgrid { display: grid; grid-template-columns: 250px 1fr 300px; gap: 16px; padding: 16px; min-height: 0; }
+.panel { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 16px; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.panel h4 { margin: 0; font-family: var(--f-mono); font-weight: 500; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-dim); }
+.file { display: flex; gap: 10px; align-items: center; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 15px; line-height: 1.2; transition: background .3s, border-color .3s, transform .3s; }
+.file .ico { flex: none; width: 28px; height: 34px; border-radius: 4px; background: var(--blue-soft); display: grid; place-items: center; font-family: var(--f-mono); font-size: 9px; color: var(--blue); font-weight: 700; }
+.file small { display: block; color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+.file.hit { background: var(--yellow-soft); border-color: var(--yellow); transform: translateX(4px); }
+.shelf-note { margin-top: auto; font-size: 13px; color: var(--ink-dim); line-height: 1.35; }
+.center { position: relative; padding: 0; overflow: hidden; background: var(--bg); }
+.view { position: absolute; inset: 0; padding: 16px; display: none; flex-direction: column; gap: 10px; }
+.view.on { display: flex; }
+#chat { overflow: hidden; justify-content: flex-end; }
+.msg { max-width: 88%; padding: 11px 14px; border-radius: 14px; font-size: 16.5px; line-height: 1.35; animation: rise .35s ease both; }
+.msg.me { align-self: flex-end; background: var(--yellow-soft); border: 1px solid var(--yellow); }
+.msg.ai { align-self: flex-start; background: var(--paper); border: 1px solid var(--line); }
+.msg .lbl { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: 4px; font-weight: 500; }
+.msg .src { display: inline-block; margin-top: 7px; font-family: var(--f-mono); font-size: 12px; color: var(--blue); background: var(--blue-soft); border-radius: 6px; padding: 2px 8px; }
+.msg ul { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 15.5px; }
+.msg li.ok { color: var(--green-dark); } .msg li.part { color: var(--amber); } .msg li.no { color: var(--coral-dark); }
+.msg .verdict { display: inline-block; margin-top: 8px; font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; padding: 3px 10px; border-radius: 99px; font-weight: 500; }
+.verdict.partial { background: var(--yellow); color: var(--ink); }
+.verdict.pass { background: var(--green); color: #fff; }
+.dots { align-self: flex-start; display: flex; gap: 5px; padding: 12px 14px; background: var(--paper); border-radius: 12px; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-dim); animation: blink 1s infinite; }
+.dots i:nth-child(2) { animation-delay: .15s; } .dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.checking { align-self: flex-start; font-family: var(--f-mono); font-size: 13px; color: var(--blue); padding: 8px 12px; border: 1px dashed var(--blue); border-radius: 8px; background: var(--blue-soft); }
+
+#tb { position: absolute; left: 16px; right: 16px; bottom: 16px; background: var(--bg); border: 3px solid var(--blue); border-radius: 14px; padding: 14px 16px; display: none; flex-direction: column; gap: 10px; box-shadow: 0 -14px 40px #0f62fe33; animation: rise .35s ease both; }
+#tb.on { display: flex; }
+#tb h5 { margin: 0; font-family: var(--f-display); font-size: 19px; }
+#tb .ph { color: var(--ink-dim); font-size: 14px; }
+#tbtext { min-height: 74px; font-size: 16.5px; line-height: 1.4; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--paper); }
+#tbtext:empty::before { content: "Explain it like you're telling a friend. Rough words are fine."; color: #8190ab; }
+.caret { display: inline-block; width: 2px; height: 1em; background: var(--blue); vertical-align: -2px; animation: blink 1s infinite; }
+.tbfoot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+#wc { font-family: var(--f-mono); font-size: 13px; color: var(--ink-dim); }
+#wc.ok { color: var(--green-dark); }
+#tbsubmit { border: 0; border-radius: 8px; padding: 9px 18px; background: var(--paper-2); color: var(--ink-dim); font-weight: 600; cursor: default; transition: background .3s, color .3s, transform .2s; }
+#tbsubmit.ready { background: var(--blue); color: #fff; }
+#tbsubmit.press { transform: scale(.94); }
+
+#graph { gap: 8px; }
+.gh { font-size: 15px; color: var(--ink-dim); }
+.gh b { color: var(--ink); font-family: var(--f-mono); font-weight: 500; }
+#gsvg { width: 100%; flex: 1; min-height: 0; }
+#gsvg text { font-family: var(--f-mono); font-size: 11px; fill: var(--ink-dim); }
+.gctl { display: flex; align-items: center; gap: 12px; font-family: var(--f-mono); font-size: 13px; }
+.gctl input { flex: 1; accent-color: var(--blue); }
+#gread { min-width: 14em; text-align: right; color: var(--ink); }
+#groots { font-size: 15px; color: var(--green-dark); min-height: 1.4em; font-weight: 600; }
+#root1, #root2 { opacity: 0; transition: opacity .4s; }
+#root1.on, #root2.on { opacity: 1; }
+
+#compare { gap: 10px; }
+#compare .ch { font-family: var(--f-display); font-size: 24px; font-weight: 800; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; align-content: start; flex: 1; min-height: 0; }
+.cmpcard { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-size: 15.5px; line-height: 1.4; display: flex; flex-direction: column; gap: 8px; opacity: 0; transform: translateY(14px); transition: opacity .5s, transform .5s; }
+.cmpcard.on { opacity: 1; transform: none; }
+.cmpcard .who { font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--blue); font-weight: 500; }
+.cmpcard .why { margin-top: 6px; font-size: 13px; color: var(--ink-dim); font-family: var(--f-mono); }
+.cmpcard em { font-style: normal; color: var(--green-dark); font-weight: 600; }
+
+.lvl { display: grid; gap: 8px; }
+.lvlbars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.lvlbars i { height: 9px; border-radius: 5px; background: var(--paper-2); transition: background .5s; }
+.lvlbars i.on { background: var(--blue); }
+.lvlnames { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; font-size: 11.5px; color: var(--ink-dim); font-family: var(--f-mono); }
+.lvlname { font-size: 18px; font-family: var(--f-display); font-weight: 800; }
+.lvlwhy { font-size: 13.5px; line-height: 1.35; color: var(--ink-dim); min-height: 3.9em; }
+.styletag { font-family: var(--f-mono); font-size: 12px; padding: 5px 9px; border-radius: 6px; background: var(--blue-soft); color: var(--blue); font-weight: 500; }
+#map { width: 100%; height: auto; }
+#map text { font-family: var(--f-body); font-size: 15px; fill: var(--ink); }
+#map .n { font-family: var(--f-mono); font-size: 14px; font-weight: 500; }
+#map .node circle { fill: var(--bg); stroke: #b8c5dc; stroke-width: 2.5; transition: fill .5s, stroke .5s; }
+#map .node.current circle { stroke: var(--blue); fill: var(--blue-soft); }
+#map .node.partial circle { fill: var(--yellow); stroke: var(--yellow); }
+#map .node.done circle { fill: var(--green); stroke: var(--green); }
+#map .node.done .n { fill: #fff; }
+#map .node.locked text { fill: var(--ink-dim); }
+#map .link { stroke: var(--line); stroke-width: 3; }
+.tokens { margin-top: auto; display: grid; gap: 6px; font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-dim); }
+.tokbar { height: 7px; background: var(--paper-2); border-radius: 4px; overflow: hidden; }
+.tokbar i { display: block; height: 100%; width: 0; background: var(--blue); transition: width .6s; }
+.dfoot { display: flex; align-items: center; padding: 0 24px; font-size: 14px; color: var(--ink-dim); border-top: 1px solid var(--line); background: var(--paper); }
+
+/* ---------- notes (N key) ---------- */
+#notes { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); width: min(760px, calc(100vw - 32px)); background: #fff; border: 2px solid var(--blue); border-radius: 14px; padding: 14px 18px; font-size: 18px; line-height: 1.45; z-index: 9; box-shadow: 0 10px 40px #111c3333; }
+#notes small { display: block; font-family: var(--f-mono); color: var(--blue); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide.active .rise, .slide.active .bar, .msg, #tb { animation: none; }
+  .slide.active .bub { animation: none; opacity: 1; }
+  .slide, .cmpcard, .file { transition: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="logo" viewBox="0 0 80 84">
+  <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2f7bff"/><stop offset="1" stop-color="#5b3df5"/></linearGradient></defs>
+  <path d="M24 26H56A16 16 0 0 1 72 42V56A16 16 0 0 1 56 72H38L24 82V72A16 16 0 0 1 8 56V42A16 16 0 0 1 24 26Z" fill="url(#lg)"/>
+  <path d="M20 22.5V33C20 39 60 39 60 33V22.5L40 30Z" fill="#e39b00"/>
+  <path d="M40 2L76 16L40 30L4 16Z" fill="#ffc21a"/>
+  <path d="M72 17V34" stroke="#ffc21a" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="72" cy="37.5" r="3.6" fill="#ffc21a"/>
+  <path d="M31 51C31 42 49 42 49 51C49 57 40 57 40 63" stroke="#fff" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+  <circle cx="40" cy="69" r="3.3" fill="#fff"/>
+</symbol></defs></svg>
+<div id="frame">
+  <div id="stage">
+
+    <!-- 1 · Opening: photo cropped, no laptop -->
+    <section class="slide active" id="s0a" aria-label="Opening">
+      <div class="topbar"></div>
+      <div class="open-text">
+        <div class="biglogo rise" style="--d:0"><svg class="mark"><use href="#logo"/></svg><span>Prof<b>LM</b></span></div>
+      </div>
+      <div class="photo-art portrait rise" style="--d:.2">
+        <div class="sq sq1"></div><div class="sq sq2"></div>
+        <div class="frame-img">
+          <img alt="A student writing in a notebook" src="/images/student.jpg">
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · Same picture, laptop and AI: today it answers everything -->
+    <section class="slide" id="s0b" aria-label="Studying with a laptop and an AI">
+      <div class="topbar"></div>
+      <div class="brand"><svg class="mark"><use href="#logo"/></svg><span>Prof<b>LM</b></span></div>
+      <div class="open-text">
+        <h1 class="rise" style="--d:0">Today, AI answers <em>everything.</em></h1>
+        <p class="lede rise" style="--d:.3">She studies with a laptop and an AI. Homework done in seconds.</p>
+      </div>
+      <div class="photo-art rise" style="--d:.2">
+        <div class="sq sq1"></div><div class="sq sq2"></div>
+        <div class="frame-img">
+          <img alt="The student with a laptop open next to her notebook" data-copy="1">
+          <div class="bub plain"><b>Plain AI</b>x = 2 or x = 3. Done.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · Problem -->
+    <section class="slide" id="s1" aria-label="The problem">
+      <div class="topbar"></div>
+      <div class="brand"><svg class="mark"><use href="#logo"/></svg><span>Prof<b>LM</b></span></div>
+      <div class="wrap">
+        <div>
+          <p class="kicker rise" style="--d:0">The problem</p>
+          <div class="stat rise" style="--d:.1" id="stat">−17%</div>
+          <p class="stat-cap rise" style="--d:.3">Exam score without AI, for maths students who practised with a plain AI assistant.</p>
+        </div>
+        <div class="rise" style="--d:.3">
+          <p class="chart-title">Exam score, no AI allowed (0 to 1)</p>
+          <svg class="chart" viewBox="0 0 520 330" width="520" height="330" role="img" aria-label="Bar chart: control 0.32, plain AI 0.27, tutor prompt 0.32">
+            <line x1="20" y1="260" x2="500" y2="260" stroke="#b8c5dc" stroke-width="2"/>
+            <rect class="bar" style="--d:.5" x="40" y="40" width="110" height="220" rx="8" fill="#9fb0cc"/>
+            <rect class="bar" style="--d:.65" x="205" y="77" width="110" height="183" rx="8" fill="#f0443a"/>
+            <rect class="bar" style="--d:.8" x="370" y="43" width="110" height="217" rx="8" fill="#0f62fe"/>
+            <text class="val" x="95" y="30" text-anchor="middle">0.32</text>
+            <text class="val" x="260" y="67" text-anchor="middle">0.27</text>
+            <text class="val" x="425" y="33" text-anchor="middle">0.32</text>
+            <text x="95" y="284" text-anchor="middle">Never used AI</text>
+            <text x="260" y="284" text-anchor="middle">Plain AI assistant</text>
+            <text x="425" y="284" text-anchor="middle">Tutor-style prompt</text>
+            <text class="note" x="260" y="140" text-anchor="middle">−17%</text>
+            <text x="425" y="310" text-anchor="middle" style="fill:#0f62fe;font-weight:600">no real difference</text>
+          </svg>
+        </div>
+      </div>
+      <div class="foot"><span>H. Bastani, O. Bastani, A. Sungu, H. Ge, Ö. Kabakcı, &amp; R. Mariman, Generative AI without guardrails can harm learning: Evidence from high school mathematics, <i>Proc. Natl. Acad. Sci. U.S.A.</i> 122 (26) e2422633122, https://doi.org/10.1073/pnas.2422633122 (2025). Bars derived from the reported differences.</span></div>
+    </section>
+
+    <!-- 4 · Solution -->
+    <section class="slide" id="s3" aria-label="The solution">
+      <div class="topbar"></div>
+      <div class="brand"><svg class="mark"><use href="#logo"/></svg><span>Prof<b>LM</b></span></div>
+      <p class="kicker rise" style="--d:0">The solution</p>
+      <h2 class="rise" style="--d:.1">Breaking the Chain of Surrender</h2>
+      <div class="tiles">
+        <div class="tile rise" style="--d:.25">
+          <span class="tbadge"><i class="d3">3</i></span>
+          <svg viewBox="0 0 52 52" fill="none" stroke="#0f62fe" stroke-width="3" stroke-linejoin="round"><path d="M10 8h24a6 6 0 0 1 6 6v30H16a6 6 0 0 1-6-6V8z"/><path d="M16 44a6 6 0 0 1-6-6M18 18h16M18 26h16"/></svg>
+          <h3>Class Notebook</h3>
+          <p>The teacher's slides and notes live inside. Every explanation shows its source.</p>
+        </div>
+        <div class="tile rise" style="--d:.4">
+          <span class="tbadge"><i class="d1">1</i></span>
+          <svg viewBox="0 0 52 52" fill="none" stroke="#ff8a1f" stroke-width="3" stroke-linejoin="round"><path d="M8 12h36v22H24l-10 8v-8H8z"/><path d="M17 21h18M17 27h10"/></svg>
+          <h3>Explain-back gate</h3>
+          <p>The next step stays locked until the student explains it in their own words.</p>
+        </div>
+        <div class="tile hot rise" style="--d:.55">
+          <span class="tbadge"><i class="d1">1</i><i class="d2">2</i></span>
+          <svg viewBox="0 0 52 52" fill="none" stroke="#0f62fe" stroke-width="3" stroke-linejoin="round"><circle cx="26" cy="16" r="8"/><path d="M10 44c0-9 7-15 16-15s16 6 16 15"/><path d="M38 8l3 3 6-6"/></svg>
+          <h3>Personal level</h3>
+          <p>It reads each student's answers, finds their level, and explains at that level.</p>
+        </div>
+        <div class="tile rise" style="--d:.7">
+          <span class="tbadge"><i class="d2">2</i></span>
+          <svg viewBox="0 0 52 52" fill="none" stroke="#14a85f" stroke-width="3" stroke-linejoin="round"><circle cx="12" cy="14" r="5"/><circle cx="40" cy="14" r="5"/><circle cx="26" cy="40" r="5"/><path d="M16 17l7 18M36 17l-7 18M17 14h18"/></svg>
+          <h3>Mastery map</h3>
+          <p>A live map shows what the student has proven, not what they have read.</p>
+        </div>
+      </div>
+      <div class="dims rise" style="--d:.9">
+        <div class="dim d1"><span class="dn">1</span><div><h4>Keep humans mentally engaged</h4><p>No step is skipped. The student must explain before moving on.</p></div></div>
+        <div class="dim d2"><span class="dn">2</span><div><h4>Prevent skill degradation</h4><p>No final answers. Hints climb from a question to a method to a similar example.</p></div></div>
+        <div class="dim d3"><span class="dn">3</span><div><h4>Build trustworthy AI</h4><p>Answers come only from the teacher's files, with sources. A rubric checks each explanation.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 4 · Demo -->
+    <section class="slide" id="s4" aria-label="Demo">
+      <div class="demo">
+        <div class="dbar"><b class="lg"><svg class="mark"><use href="#logo"/></svg><span>Prof<span class="brand-in">LM</span></span></b><span>Maths 9 · Quadratics</span><span class="live">Scripted walkthrough · example student</span></div>
+        <div class="dgrid">
+          <div class="panel" id="shelf">
+            <h4>Class materials</h4>
+            <div class="file" id="f1"><div class="ico">PDF</div><div>Chapter 5 notes<small>Quadratic equations</small></div></div>
+            <div class="file" id="f2"><div class="ico">PPT</div><div>Week 3 slides<small>Factoring</small></div></div>
+            <div class="file" id="f3"><div class="ico">PDF</div><div>Homework 4<small>From your teacher</small></div></div>
+            <p class="shelf-note">The tutor answers only from these files. If it is not in them, it says so.</p>
+          </div>
+          <div class="panel center">
+            <div class="view on" id="chat"></div>
+            <div id="tb">
+              <h5>Explain it back</h5>
+              <div class="ph">In your own words. At least 15 words.</div>
+              <div id="tbtext"></div>
+              <div class="tbfoot"><span id="wc">0 / 15 words</span><button id="tbsubmit" tabindex="-1">Check my explanation</button></div>
+            </div>
+            <div class="view" id="graph">
+              <div class="gh">Practice example: <b>y = x² + 3x + 2</b>. Predict where the curve crosses <b>y = 0</b>, then check. Drag the slider yourself.</div>
+              <svg id="gsvg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Parabola with a movable marker"></svg>
+              <div class="gctl"><input type="range" id="xs" min="-4.4" max="1.4" step="0.01" value="-4.2" aria-label="x value"><span id="gread"></span></div>
+              <div id="groots"></div>
+            </div>
+            <div class="view" id="compare">
+              <div class="ch">Same concept, two students</div>
+              <div class="cmp">
+                <div class="cmpcard" id="c1"><span class="who">Starting out</span><span>Picture two hidden numbers. <em>Multiply</em> them to get the last number. <em>Add</em> them to get the middle one.</span><span>For x² + 3x + 2, try 1 and 2.</span><span class="why">Analogy · small step · hint ready</span></div>
+                <div class="cmpcard" id="c2"><span class="who">Confident</span><span>Find p and q with pq = c and p + q = b.</span><span><em>Your turn:</em> factor x² + 7x + 12, then explain why the check works.</span><span class="why">Precise terms · skips ahead · no hint</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <h4>Student level</h4>
+            <div class="lvl">
+              <div class="lvlname" id="lvlname">Not known yet</div>
+              <div class="lvlbars"><i></i><i></i><i></i></div>
+              <div class="lvlnames"><span>Starting</span><span>Building</span><span>Confident</span></div>
+              <div class="lvlwhy" id="lvlwhy">The tutor starts with a question to find out.</div>
+              <div class="styletag" id="styletag">Explaining: not set</div>
+            </div>
+            <h4>Mastery map</h4>
+            <svg id="map" viewBox="0 0 270 250" role="img" aria-label="Four lesson steps with progress">
+              <line class="link" x1="24" y1="30" x2="24" y2="205"/>
+              <g class="node current" id="n1"><circle cx="24" cy="30" r="15"/><text class="n" x="24" y="35" text-anchor="middle">1</text><text x="52" y="35">What "solving" means</text></g>
+              <g class="node locked" id="n2"><circle cx="24" cy="95" r="15"/><text class="n" x="24" y="100" text-anchor="middle">2</text><text x="52" y="100">Zero-product rule</text></g>
+              <g class="node locked" id="n3"><circle cx="24" cy="150" r="15"/><text class="n" x="24" y="155" text-anchor="middle">3</text><text x="52" y="155">Factoring</text></g>
+              <g class="node locked" id="n4"><circle cx="24" cy="205" r="15"/><text class="n" x="24" y="210" text-anchor="middle">4</text><text x="52" y="210">Solve and check</text></g>
+            </svg>
+            <div class="tokens"><span id="toktxt">Tokens: 0 / 20,000</span><div class="tokbar"><i id="tokbar"></i></div></div>
+          </div>
+        </div>
+        <div class="dfoot">The teacher sees class-level numbers only. Answers stay in the browser.</div>
+      </div>
+    </section>
+
+    <!-- 6 · Close -->
+    <section class="slide" id="s6" aria-label="Close">
+      <div class="topbar"></div>
+      <div class="blob"></div><div class="blob b2"></div>
+      <div class="biglogo rise" style="--d:0"><svg class="mark"><use href="#logo"/></svg><span>Prof<b>LM</b></span></div>
+      <h1 class="rise" style="--d:.2">AI as the <em>coach.</em><br>Not the <span>autopilot.</span></h1>
+    </section>
+
+  </div>
+</div>
+
+<div id="notes" hidden><small id="notelabel"></small><span id="notetext"></span></div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var stage = document.getElementById("stage"), frame = document.getElementById("frame");
+  var cur = 0;
+  var NOTES = ["Opening. A student with a notebook, working on her own.", "Today she studies with a laptop and an AI that answers everything. Homework done in seconds.", "AI answering everything feels helpful but skips the thinking. Study: about 1,000 high-school maths students. Plain AI assistant: 17% lower exam score without AI. Tutor-style prompt: no harm, no gain. Source: Bastani et al., PNAS 2025.", "Four blocks: Class Notebook, Explain-back gate, Personal level, Mastery map. Three judging dimensions: 1 keep humans engaged, 2 prevent skill degradation, 3 build trustworthy AI.", "Demo plays by itself. Sequence: asks for answer, gets a question; level read from her reply; explanation at her level with source; explain-back; rubric feedback, step locked; retry, pass, level up; precise wording; graph; confident student gets a challenge.", "AI as the coach. Not the autopilot."];
+  var NOTE_LABELS = ["1 · Opening", "2 · Laptop and AI: it answers everything", "3 · The 17% result", "4 · Breaking the Chain of Surrender", "5 · Demo (starts by itself)", "6 · Close"];
+
+  /* ---------- fit to the whole window ---------- */
+  function fit() {
+    var s = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+    stage.style.transform = "scale(" + s + ")";
+    frame.style.width = 1280 * s + "px";
+    frame.style.height = 720 * s + "px";
+    frame.style.left = (window.innerWidth - 1280 * s) / 2 + "px";
+    frame.style.top = (window.innerHeight - 720 * s) / 2 + "px";
+  }
+  window.addEventListener("resize", fit);
+
+  /* ---------- navigation: keyboard only, nothing is drawn on screen ---------- */
+  var DEMO = 4, STAT = 2;
+  function go(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach(function (s, k) { s.classList.toggle("active", k === i); });
+    cur = i;
+    document.getElementById("notelabel").textContent = NOTE_LABELS[i];
+    document.getElementById("notetext").textContent = NOTES[i];
+    stopDemo();
+    if (i === STAT) countStat();
+    if (i === DEMO) runDemo();
+  }
+  function countStat() {
+    var el = document.getElementById("stat"), t0 = performance.now();
+    function f(t) {
+      var p = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = "\u2212" + Math.round(17 * e) + "%";
+      if (p < 1 && cur === STAT) requestAnimationFrame(f);
+    }
+    requestAnimationFrame(f);
+  }
+  function toggleFs() {
+    try {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else document.documentElement.requestFullscreen();
+    } catch (e) {}
+  }
+  document.addEventListener("fullscreenchange", fit);
+  var notesEl = document.getElementById("notes");
+  function toggleNotes() { notesEl.hidden = !notesEl.hidden; }
+  document.addEventListener("keydown", function (e) {
+    if (e.target && e.target.tagName === "INPUT") return;
+    var k = e.key;
+    if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Enter") { e.preventDefault(); go(cur + 1); }
+    else if (k === "ArrowLeft" || k === "PageUp") { e.preventDefault(); go(cur - 1); }
+    else if (k === "Home") go(0);
+    else if (k === "End") go(slides.length - 1);
+    else if (k === "n" || k === "N") toggleNotes();
+    else if (k === "f" || k === "F") toggleFs();
+    else if ((k === "r" || k === "R") && cur === DEMO) runDemo();
+  });
+
+  /* ---------- demo ---------- */
+  var dt = [], raf = 0;
+  var chat = document.getElementById("chat");
+  var T = 0.8; /* demo pace: 1 = fast, higher = slower */
+  function at(ms, fn) { dt.push(setTimeout(fn, ms * T)); }
+  function stopDemo() { dt.forEach(clearTimeout); dt = []; cancelAnimationFrame(raf); }
+  function view(id) {
+    ["chat", "graph", "compare"].forEach(function (v) { document.getElementById(v).classList.toggle("on", v === id); });
+    document.getElementById("tb").classList.remove("on");
+  }
+  function clearDots() { var d = chat.querySelector(".dots, .checking"); if (d) d.remove(); }
+  function bubble(cls, html) {
+    clearDots();
+    var m = document.createElement("div");
+    m.className = "msg " + cls; m.innerHTML = html;
+    chat.appendChild(m);
+    while (chat.scrollHeight > chat.clientHeight + 2 && chat.children.length > 1) chat.removeChild(chat.firstChild);
+    return m;
+  }
+  function typing() { clearDots(); var d = document.createElement("div"); d.className = "dots"; d.innerHTML = "<i></i><i></i><i></i>"; chat.appendChild(d); }
+  function checking() { clearDots(); var d = document.createElement("div"); d.className = "checking"; d.textContent = "Checking against the rubric for this step…"; chat.appendChild(d); }
+  function node(i, state) { document.getElementById("n" + i).setAttribute("class", "node " + state); }
+  function setTokens(n) {
+    document.getElementById("toktxt").textContent = "Tokens: " + n.toLocaleString("en-US") + " / 20,000";
+    document.getElementById("tokbar").style.width = (n / 200) + "%";
+  }
+  function setLevel(n, name, why, style) {
+    var bars = document.querySelectorAll(".lvlbars i");
+    Array.prototype.forEach.call(bars, function (b, k) { b.classList.toggle("on", k < n); });
+    document.getElementById("lvlname").textContent = name;
+    document.getElementById("lvlwhy").textContent = why;
+    document.getElementById("styletag").textContent = "Explaining: " + style;
+  }
+  function hitFile(id, on) { document.getElementById(id).classList.toggle("hit", on); }
+  function countWords(s) { s = s.trim(); return s ? s.split(/\s+/).length : 0; }
+
+  function typeInto(start, text, perChar, done) {
+    var box = document.getElementById("tbtext"), wc = document.getElementById("wc"), btn = document.getElementById("tbsubmit");
+    for (var k = 1; k <= text.length; k++) (function (k) {
+      at(start + k * perChar, function () {
+        var t = text.slice(0, k), n = countWords(t);
+        box.innerHTML = ""; box.appendChild(document.createTextNode(t));
+        var c = document.createElement("span"); c.className = "caret"; box.appendChild(c);
+        wc.textContent = n + " / 15 words"; wc.classList.toggle("ok", n >= 15);
+        btn.classList.toggle("ready", n >= 15);
+      });
+    })(k);
+    at(start + text.length * perChar + 100, done);
+  }
+
+  /* parabola */
+  var GX0 = -5, GX1 = 2, GY0 = -1, GY1 = 9, PX0 = 44, PX1 = 580, PY0 = 12, PY1 = 324;
+  function px(x) { return PX0 + (x - GX0) / (GX1 - GX0) * (PX1 - PX0); }
+  function py(y) { return PY1 - (y - GY0) / (GY1 - GY0) * (PY1 - PY0); }
+  function f(x) { return x * x + 3 * x + 2; }
+  var found = {};
+  function buildGraph() {
+    var s = '<defs><clipPath id="clip"><rect x="' + PX0 + '" y="' + PY0 + '" width="' + (PX1 - PX0) + '" height="' + (PY1 - PY0) + '"/></clipPath></defs>';
+    for (var gx = GX0; gx <= GX1; gx++) {
+      s += '<line x1="' + px(gx) + '" y1="' + PY0 + '" x2="' + px(gx) + '" y2="' + PY1 + '" stroke="#e3eaf6"/>';
+      s += '<text x="' + px(gx) + '" y="' + (PY1 + 16) + '" text-anchor="middle">' + (gx < 0 ? "−" + (-gx) : gx) + '</text>';
+    }
+    for (var gy = 0; gy <= 8; gy += 2) {
+      s += '<line x1="' + PX0 + '" y1="' + py(gy) + '" x2="' + PX1 + '" y2="' + py(gy) + '" stroke="#e3eaf6"/>';
+      s += '<text x="' + (PX0 - 8) + '" y="' + (py(gy) + 4) + '" text-anchor="end">' + gy + '</text>';
+    }
+    s += '<line x1="' + PX0 + '" y1="' + py(0) + '" x2="' + PX1 + '" y2="' + py(0) + '" stroke="#111c33" stroke-width="2"/>';
+    var d = "";
+    for (var x = -4.6; x <= 1.6; x += 0.05) d += (d ? "L" : "M") + px(x).toFixed(1) + " " + py(f(x)).toFixed(1);
+    s += '<path d="' + d + '" fill="none" stroke="#0f62fe" stroke-width="4" clip-path="url(#clip)"/>';
+    [-2, -1].forEach(function (r, i) {
+      s += '<g id="root' + (i + 1) + '"><circle cx="' + px(r) + '" cy="' + py(0) + '" r="10" fill="#14a85f"/><text x="' + px(r) + '" y="' + (py(0) - 16) + '" text-anchor="middle" style="fill:#0b7a43;font-size:14px;font-weight:700">x = ' + (r < 0 ? "−" + (-r) : r) + '</text></g>';
+    });
+    s += '<line id="mk" x1="0" y1="' + PY0 + '" x2="0" y2="' + PY1 + '" stroke="#ff8a1f" stroke-width="2" stroke-dasharray="5 5"/>';
+    s += '<circle id="md" r="8" fill="#ff8a1f" stroke="#fff" stroke-width="2"/>';
+    document.getElementById("gsvg").innerHTML = s;
+  }
+  function moveMarker(x) {
+    var y = f(x), mk = document.getElementById("mk"), md = document.getElementById("md");
+    mk.setAttribute("x1", px(x)); mk.setAttribute("x2", px(x));
+    md.setAttribute("cx", px(x)); md.setAttribute("cy", py(Math.max(GY0, Math.min(GY1, y))));
+    var xs = document.getElementById("xs"); if (+xs.value !== x) xs.value = x;
+    var xv = x.toFixed(2).replace("-", "−"), yv = y.toFixed(2).replace("-", "−");
+    document.getElementById("gread").textContent = "x = " + xv + "   y = " + yv;
+    [-2, -1].forEach(function (r, i) {
+      if (Math.abs(x - r) < 0.04) { found[r] = true; document.getElementById("root" + (i + 1)).classList.add("on"); }
+    });
+    var fr = [-2, -1].filter(function (r) { return found[r]; });
+    document.getElementById("groots").textContent = fr.length === 2 ? "The curve meets zero at x = −2 and x = −1. These are the solutions." : (fr.length === 1 ? "One crossing found. Is there another?" : "");
+  }
+  document.getElementById("xs").addEventListener("input", function (e) { moveMarker(parseFloat(e.target.value)); });
+  function animateTo(from, to, ms, cb) {
+    ms *= T;
+    var t0 = performance.now();
+    function step(t) {
+      var p = Math.min(1, (t - t0) / ms), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      moveMarker(from + (to - from) * e);
+      if (p < 1) raf = requestAnimationFrame(step); else if (cb) cb();
+    }
+    raf = requestAnimationFrame(step);
+  }
+
+  var TEACH = "x is the mystery number. Solving means finding the number that makes both sides equal, and I think there might be two of them.";
+
+  function resetDemo() {
+    chat.innerHTML = "";
+    view("chat");
+    ["c1", "c2"].forEach(function (id) { document.getElementById(id).classList.remove("on"); });
+    ["f1", "f2", "f3"].forEach(function (id) { hitFile(id, false); });
+    node(1, "current"); node(2, "locked"); node(3, "locked"); node(4, "locked");
+    setLevel(0, "Not known yet", "The tutor starts with a question to find out.", "not set");
+    setTokens(0);
+    found = {};
+    document.getElementById("root1").classList.remove("on");
+    document.getElementById("root2").classList.remove("on");
+    document.getElementById("tbtext").innerHTML = "";
+    document.getElementById("wc").textContent = "0 / 15 words"; document.getElementById("wc").classList.remove("ok");
+    document.getElementById("tbsubmit").classList.remove("ready", "press");
+    moveMarker(-4.2);
+  }
+
+  /* starts by itself every time the demo slide opens */
+  function runDemo() {
+    stopDemo(); resetDemo();
+    at(600, function () { bubble("me", "Solve x² − 5x + 6 = 0 for me."); });
+    at(1700, typing);
+    at(3100, function () { bubble("ai", '<span class="lbl">Probe</span>I won’t solve this one for you, but I’ll get you there. First: what do you think “solving” means here?'); setTokens(310); });
+    at(5300, function () { bubble("me", "finding x? idk"); });
+    at(6300, function () { setLevel(1, "Starting out", "Short answer, no terms used, unsure. So: simple words, one idea, an analogy.", "simple words, analogy, small step"); });
+    at(7800, typing);
+    at(9200, function () {
+      bubble("ai", '<span class="lbl">Explain · simple words</span>Think of x as a mystery number. Solving means finding the number that makes the equation true. Example: in x² = 16, both 4 and −4 work.<br><span class="src">Chapter 5 notes · p.2</span>');
+      hitFile("f1", true); setTokens(740);
+    });
+    at(11500, function () { hitFile("f1", false); document.getElementById("tb").classList.add("on"); });
+    typeInto(12000, TEACH, 34, function () {});
+    at(17000, function () { document.getElementById("tbsubmit").classList.add("press"); });
+    at(17300, function () { document.getElementById("tb").classList.remove("on"); bubble("me", TEACH); });
+    at(18200, checking);
+    at(19800, function () {
+      bubble("ai", '<span class="lbl">Feedback</span><ul><li class="ok">✓ x is an unknown number</li><li class="ok">✓ solving makes the equation true</li><li class="part">~ two solutions: where would the second one come from?</li></ul><span class="verdict partial">Partly there · step stays locked</span>');
+      node(1, "partial"); setTokens(1020);
+    });
+    at(22800, function () { bubble("me", "x² = 16 gives 4 and −4, so squaring makes two."); });
+    at(23800, checking);
+    at(25000, function () {
+      bubble("ai", '<span class="lbl">Feedback</span><ul><li class="ok">✓ unknown number</li><li class="ok">✓ makes it true</li><li class="ok">✓ two solutions from squaring</li></ul><span class="verdict pass">Understood · step 2 unlocked</span>');
+      node(1, "done"); node(2, "current"); setTokens(1240);
+      setLevel(2, "Building", "First explanation needed one retry, then reasoned correctly. Moving to precise terms.", "precise terms, no analogy");
+    });
+    at(28200, typing);
+    at(29500, function () {
+      bubble("ai", '<span class="lbl">Explain · precise terms</span>Zero-product rule: if A × B = 0, then A = 0 or B = 0. Why would this fail if the right side were 5?<br><span class="src">Week 3 slides · slide 6</span>');
+      hitFile("f2", true); setTokens(1480);
+    });
+    at(32500, function () { hitFile("f2", false); view("graph"); });
+    at(33500, function () { animateTo(-4.2, -2, 2600, null); });
+    at(36800, function () { animateTo(-2, -1, 1500, null); });
+    at(39000, function () { animateTo(-1, 1.2, 2200, null); });
+    at(41800, function () { node(2, "done"); node(3, "current"); setTokens(1700); });
+    at(44000, function () { view("compare"); });
+    at(44600, function () { document.getElementById("c1").classList.add("on"); });
+    at(46800, function () { document.getElementById("c2").classList.add("on"); setTokens(1860); });
+  }
+
+  var photoSrc = document.querySelector("#s0a img").src;
+  Array.prototype.forEach.call(document.querySelectorAll("img[data-copy]"), function (im) { im.src = photoSrc; });
+  buildGraph(); moveMarker(-4.2);
+  fit(); go(0);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+</script>
+</body>
+</html>

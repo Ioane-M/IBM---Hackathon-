@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* ProfLM theme: white, bright blue, sun yellow */
+@theme {
+  --color-ink: #111c33;
+  --color-dim: #55627d;
+  --color-line: #d3ddee;
+  --color-paper: #f3f6fc;
+  --color-paper2: #e6edf9;
+  --color-brand: #0f62fe;
+  --color-brandsoft: #e3edff;
+  --color-sun: #ffc21a;
+  --color-sunsoft: #fff1c4;
+  --color-ok: #14a85f;
+  --color-oksoft: #d8f4e6;
+  --color-okdark: #0b7a43;
+  --color-bad: #f0443a;
+  --color-badsoft: #ffe3e0;
+  --color-orange: #ff8a1f;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-sans: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.rise { animation: rise .35s ease both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
+}
