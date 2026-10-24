@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks a commit that contains something that looks like a secret.
+npx --no-install tsx scripts/check-secrets.ts || exit 1

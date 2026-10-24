@@ -9,7 +9,9 @@
     "check": "npx tsx scripts/check-guards.ts",
     "check:api": "npx tsx scripts/check-api.ts",
     "ica-check": "npx tsx scripts/ica-check.ts",
-    "validate-lesson": "npx tsx scripts/validate-lesson.ts"
+    "validate-lesson": "npx tsx scripts/validate-lesson.ts",
+    "check:secrets": "npx tsx scripts/check-secrets.ts",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "next": "16.4.3",

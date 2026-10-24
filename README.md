@@ -145,6 +145,15 @@ ICA_COLLECTION_ID=     # optional: a document collection with the teacher's file
 
 The key is read only on the server. The browser never calls ICA.
 
+### Keeping the key out of GitHub
+
+- The key lives **only** in `.env.local` on your machine and in **Vercel → Settings → Environment Variables** (type *Secret*). It is never in the code.
+- `.gitignore` excludes every `.env*` file except `.env.example`, which has empty values.
+- `npm run check:secrets` scans the repo for key-like strings and for committed env files. A **pre-commit hook** runs it automatically (`npm install` switches it on), so a commit with a key in it is refused.
+- The key is read in one place, `lib/ica.ts`, on the server, and is never logged or sent to the browser.
+- If a key is ever pasted into a chat, an issue or a commit, treat it as leaked: revoke it in the ICA UI and create a new one. Deleting the commit is not enough.
+- Optional: turn on **Settings → Code security → Secret scanning / Push protection** on GitHub for a second layer.
+
 **Deploy on Vercel.** Import the repo, keep the defaults, and add `ICA_API_KEY` and `ICA_MODEL` under *Settings → Environment Variables*. With no variables the site runs in demo mode.
 
 ### Tests
@@ -154,6 +163,7 @@ The key is read only on the server. The browser never calls ICA.
 | `npm run check` | 20 offline checks: answer-leak guard, copy detection, JSON parsing, level rules, grader, scripted tutor never leaks the homework answer | no |
 | `npm run check:api` | 17 end-to-end checks against a running server: probe first, redirect without a model call, hint ladder, step lock, copy and short-answer rejection, instructions hidden in an answer do not unlock | no (works in both modes) |
 | `npm run ica-check` | Lists your ICA models and tests one chat call and JSON compliance | yes |
+| `npm run check:secrets` | Scans tracked and staged files for keys and committed env files (also runs before every commit) | no |
 | `npm run build` | Type-checks and builds | no |
 
 ## Architecture
